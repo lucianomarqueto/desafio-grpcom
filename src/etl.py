@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from pathlib import Path
 
+#obtem path local
 def get_project_root() -> Path:    
     if '__file__' in globals():        
         return Path(os.path.abspath(__file__)).parent.parent
@@ -10,9 +11,12 @@ def get_project_root() -> Path:
         #Path fixo para executar via IPYTHON
         return 'E:/_python_projects/desafio-grpcom'
 
+#converte valores para float
 def convert_float(x):
     return float(x.lower().replace('r$ ','').strip().replace('.','').replace(',','.'))
 
+#Corrige erros nos nomes das casas
+#Adiciona o nome da pessoa caso ela não tenha uma casa definida
 def correcao_house(x):
     if pd.isna(x['house']):
         return x['name']
@@ -68,8 +72,7 @@ gp['acumulado']= gp['patrimonio'].cumsum()
 gp['representacao']= gp['patrimonio']/gp['patrimonio'].sum()
 gp['acumulado%']= round(gp['representacao'].cumsum()*100,2)
 
-len(gp.loc[gp['acumulado%']<0.5])
-
+#montar o JSON final
 dic_json = {
         "chart":{
                    "categories" : gp.index.tolist(),
@@ -83,6 +86,7 @@ dic_json = {
                 }
         }
 
+#exportar o arquivo
 with open(get_project_root()+'/data/result/chart.json', 'w') as outfile:
     json.dump(dic_json, outfile)
 
