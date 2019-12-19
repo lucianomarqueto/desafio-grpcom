@@ -3,12 +3,11 @@ import json
 import pandas as pd
 from pathlib import Path
 
-
 def get_project_root() -> Path:    
     if '__file__' in globals():        
         return Path(os.path.abspath(__file__)).parent.parent
     else:
-        #Path fixo para IPYTHON
+        #Path fixo para executar via IPYTHON
         return 'E:/_python_projects/desafio-grpcom'
 
 def convert_float(x):
@@ -67,7 +66,7 @@ gp = gp.loc[gp['patrimonio']>0]
 #Calcula Acumulado
 gp['acumulado']= gp['patrimonio'].cumsum()
 gp['representacao']= gp['patrimonio']/gp['patrimonio'].sum()
-gp['acumulado%']= gp['representacao'].cumsum()
+gp['acumulado%']= round(gp['representacao'].cumsum()*100,2)
 
 len(gp.loc[gp['acumulado%']<0.5])
 
@@ -77,14 +76,14 @@ dic_json = {
                    "acumulado" : gp['acumulado%'].tolist(),
                    "patrimonio" : gp['patrimonio'].tolist(),
                    "plot_bands": {
-                        "a": len(gp.loc[gp['acumulado%']<0.5]),
-                        "b": len(gp.loc[gp['acumulado%']<0.8]),
+                        "a": len(gp.loc[gp['acumulado%']<50]),
+                        "b": len(gp.loc[gp['acumulado%']<80]),
                         "c": len(gp['acumulado%'])
                         }
                 }
         }
 
-with open(get_project_root()+'/chart.json', 'w') as outfile:
+with open(get_project_root()+'/data/result/chart.json', 'w') as outfile:
     json.dump(dic_json, outfile)
 
 
