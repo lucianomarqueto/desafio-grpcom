@@ -182,8 +182,7 @@
 
     loadJSON(function(response) {
         // Parse JSON string into object
-        var JSON = JSON.parse(response);        
-        loadChart(JSON);
+        loadChart(JSON.parse(response));        
     });
 
 
